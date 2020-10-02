@@ -1,5 +1,8 @@
 name: 'lambda-build-project'
 description: 'Checks out to a branch, fetches LFS changes and builds a project'
+branding:
+  icon: hard-drive
+  color: purple
 inputs:
   branch:
     description: 'Which branch to check out to'
