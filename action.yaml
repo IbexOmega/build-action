@@ -1,0 +1,39 @@
+name: 'Build-Project'
+description: 'Checks out to a branch, fetches LFS changes and builds a project'
+inputs:
+  branch:
+    description: 'Which branch to check out to'
+    required: true
+  project-path:
+    description: 'Path to .vcxproj'
+    required: true
+  build-configuration:
+    Description: 'Build configuration, eg. Production x64_StaticLib'
+    required: true
+runs:
+  using: "composite"
+  steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: IbexOmega/CrazyCanvas
+          branch: ${{ inputs.build-configuration }}
+          submodules: true
+
+      - name: Read LFS Cache
+        run: cp -r -Force ../../.git/lfs .git/
+
+      # Fetches changes and replaces LFS pointers with their actual contents
+      - name: Pull From LFS
+        run: git lfs pull
+
+      - name: Update LFS Cache
+        run: cp -r -Force .git/lfs ../../.git/
+
+      - name: Execute Premake
+        run: .\premake5.exe vs2019
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.1
+
+      - name: Build CrazyCanvas Production
+        run: msbuild ${{ inputs.project-path }} -p:Configuration="${{ inputs.build-configuration }}" -p:Platform=x64
