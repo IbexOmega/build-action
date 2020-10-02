@@ -1,4 +1,4 @@
-name: 'Build-Project'
+name: 'lambda-build-project'
 description: 'Checks out to a branch, fetches LFS changes and builds a project'
 inputs:
   branch:
