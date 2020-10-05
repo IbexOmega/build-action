@@ -1,12 +1,9 @@
 name: 'lambda-build-project'
-description: 'Checks out to a branch, fetches LFS changes and builds a project'
+description: 'Fetches LFS changes, runs premake and builds a project'
 branding:
   icon: hard-drive
   color: purple
 inputs:
-  branch:
-    description: 'Which branch to check out to'
-    required: true
   project-path:
     description: 'Path to .vcxproj'
     required: true
@@ -16,12 +13,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-      - uses: actions/checkout@v2
-        with:
-          repository: IbexOmega/CrazyCanvas
-          branch: ${{ inputs.build-configuration }}
-          submodules: true
-
       - name: Read LFS Cache
         run: cp -r -Force ../../.git/lfs .git/
 
@@ -34,9 +25,6 @@ runs:
 
       - name: Execute Premake
         run: .\premake5.exe vs2019
-
-      - name: Add MSBuild to PATH
-        uses: microsoft/setup-msbuild@v1.0.1
 
       - name: Build CrazyCanvas Production
         run: msbuild ${{ inputs.project-path }} -p:Configuration="${{ inputs.build-configuration }}" -p:Platform=x64
