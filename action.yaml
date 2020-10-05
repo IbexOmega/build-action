@@ -15,16 +15,21 @@ runs:
   steps:
       - name: Read LFS Cache
         run: cp -r -Force ../../.git/lfs .git/
+        shell: powershell
 
       # Fetches changes and replaces LFS pointers with their actual contents
       - name: Pull From LFS
         run: git lfs pull
+        shell: powershell
 
       - name: Update LFS Cache
         run: cp -r -Force .git/lfs ../../.git/
+        shell: powershell
 
       - name: Execute Premake
         run: .\premake5.exe vs2019
+        shell: powershell
 
       - name: Build CrazyCanvas Production
         run: msbuild ${{ inputs.project-path }} -p:Configuration="${{ inputs.build-configuration }}" -p:Platform=x64
+        shell: powershell
